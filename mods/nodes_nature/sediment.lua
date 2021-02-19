@@ -288,7 +288,17 @@ for i in ipairs(list) do
 		s
 	)
 
-
+	--local slope_defs=naturalslopeslib.get_slope_defs("nodes_nature:"..name)
+	local slope_names = {"stairs:stair_"..name,
+			     "stairs:stair_inner_"..name,
+			     "stairs:stair_outer_"..name,
+			     "stairs:slab_"..name}
+	naturalslopeslib.set_slopes("nodes_nature:"..name,
+				    slope_names[1], slope_names[2],
+				    slope_names[3], slope_names[4], 10)
+	naturalslopeslib.register_slope("nodes_nature:"..name.."_wet", {}, 10)
+	naturalslopeslib.register_slope("nodes_nature:"..name.."_wet_salty",
+					{}, 10)
 end
 
 
@@ -330,6 +340,7 @@ for i in ipairs(list2) do
 		_wet_salty_name = "nodes_nature:"..dropped.."_wet_salty",
 		_ag_soil = "nodes_nature:"..dropped.."_agricultural_soil",
 	})
+	naturalslopeslib.register_slope("nodes_nature:"..name, {}, 10)
 
 
 	--register wet
@@ -345,6 +356,7 @@ for i in ipairs(list2) do
 		_dry_name = "nodes_nature:"..name,
 		_ag_soil = "nodes_nature:"..dropped.."_agricultural_soil_wet",
 	})
+	naturalslopeslib.register_slope("nodes_nature:"..name.."_wet", {}, 10)
 
 	--no salty as salty kills the surface life
 	--wet salty is just the raw sediment version.

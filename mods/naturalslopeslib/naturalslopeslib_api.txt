@@ -1,0 +1,302 @@
+Naturalslopeslib Lua API
+========================
+
+Table of contents
+-- Introduction
+-- Usage
+-- Definitions
+---- ReplacementTable
+-- Registration API
+---- naturalslopeslib.register_slope
+---- naturalslopeslib.set_slopes
+---- naturalslopeslib.register_sloped_stomp
+-- Getters
+---- naturalslopeslib.get_slope_defs
+---- naturalslopeslib.get_regular_node_name
+---- naturalslopeslib.get_replacement
+---- naturalslopeslib.get_replacement_id
+---- naturalslopeslib.get_all_shapes
+-- Shape update API
+---- naturalslopeslib.is_free_for_shape_update
+---- naturalslopeslib.area_is_free_for_shape_update
+---- naturalslopeslib.get_replacement_node
+---- naturalslopeslib.chance_update_shape
+---- naturalslopeslib.update_shape
+---- naturalslopeslib.update_shape_on_walk
+-- Map generation
+---- naturalslopeslib.set_manual_map_generation
+---- naturalslopeslib.area_chance_update_shape
+---- naturalslopeslib.register_progressive_area_update
+-- Settings getters
+---- naturalslopeslib.setting_enable_surface_update
+---- naturalslopeslib.setting_enable_shape_on_walk
+---- naturalslopeslib.setting_enable_shape_on_generation
+---- naturalslopeslib.setting_generation_method
+---- naturalslopeslib.setting_generation_factor
+---- naturalslopeslib.setting_generation_skip
+---- naturalslopeslib.setting_enable_shape_on_dig_place
+---- naturalslopeslib.setting_smooth_rendering
+-- Chat commands
+---- updshape
+
+
+Introduction
+------------
+
+Naturalslopeslib adds the ability for given nodes to turn into slopes and back to full block shape by itself according to the surroundings and the material hardness. It creates natural landscape and smoothes movements.
+
+Slopes can be generated in various ways. Those events can be turned on or off in settings. The shape is updated on generation, with time, by stepping on edges or when digging and placing nodes.
+
+As Minetest main unit is the block, having half-sized blocks can break a lot of things. Thus half-blocks like slopes are still considered as a single block. A single slope can turn back to a full node and vice-versa and half-blocks are not considered buildable upon (they will transform back into full block).
+
+Usage
+-----
+
+You may register slopes in two ways: letting the mod generating all the stuff or getting the definitions and registering the nodes in the calling mod. With the first method, slope nodes will be registered within naturalslopeslib while with the second method, you can set the slope names from the calling mod. In both cases, the shape update behaviour is handled automatically by the library according to the settings and the availability of poschangelib and twmlib.
+
+For the first method, just call naturalslopeslib.register_slopes.
+
+For example:
+
+naturalslopeslib.register_slopes("default:dirt")
+
+You can use naturalslopeslib.get_all_shapes to get the name of the slope nodes.
+
+For the second method, get the slope definitions from naturalslopeslib.get_slope_defs and register the four nodes manually with the desired names with minetest.register_node. When done, call naturalslopeslib.set_slopes to link all the different shapes.
+
+For example:
+
+local slope_defs = naturalslopeslib.get_slope_defs("defaut:dirt")
+local slope_names = {"default:dirt_slope", "default:dirt_inner_corner", "default:dirt_outer_corner", "default:dirt_pike"}
+for i, def in ipairs(slope_defs) do
+	minetest.register_node(slope_names[i], def)
+end
+naturalslopeslib.set_slopes("default:dirt", slope_names[1], slope_names[2], slope_names[3], slope_names[4], factors)
+
+
+Definitions
+-----------
+
+### ReplacementTable
+
+A table containing references to various shape. The type of references can either be a name or an internal id.
+{
+	source         = full node reference,
+	straight       = straight slope reference,
+	inner          = inner corner reference,
+	outer          = outer corner reference,
+	pike           = pike/slab reference,
+	chance         = inverted chance of happening,
+	chance_factors = multiplicator for `chance` for each type {mapgen = w, stomp = x, time = y, place = z}. By default all of these factors are 1 (no effect).
+}
+
+
+Registration API
+----------------
+
+### naturalslopeslib.register_slope(base_node_name, def_changes, update_chance, factors)
+
+* Registers all slope shapes and automatic stomping for a full node.
+* `base_node_name` the full block node name.
+* `def_changes` changes to apply from the base node definition.
+  * All the attributes are copied to the sloped nodes expect those ones which are replaced:
+    * `drawtype` set to "nodebox" or "mesh" according to the rendering mode
+    * `nodebox` or `mesh` is replaced
+    * `selection_box` and `collision_box` matching to the according mesh
+    * `paramtype` and `paramtype2` set to "light" and "facedir" respectively
+    * the group "natural_slope" is added (1 = straight, 2 = inner corner, 3 = outer corner, 4 = pike)
+    * the group "family:<full node name>" is added
+  * Then they are changed from def_changes. Use "nil" string to explicitely erase a value (an not nil).
+* `update_chance` inverted chance for the node to be updated.
+* `factors` optional table for chance factors. By default each factor is 1.
+* returns ReplacementTable.
+
+### naturalslopeslib.set_slopes(base_node_name, straight_name, inner_name, outer_name, pike_name, update_chance, factors)
+
+* Link existing nodes. Same as register_slopes but without registering new nodes. Use it when the shapes are already registered from eslewhere. The node definitions are not changed at all.
+* `base_node_name` the full node name.
+* `straight_name` the straight slope node name.
+* `inner_name` the inner corner node name.
+* `outer_name` the outer corner node name.
+* `pike_name` the pike/slab node name.
+* `update_chance` the inverted chance of happening.
+* `factors` optional table for chance factors. By default each factor is 1.
+* returns ReplacementTable.
+
+### naturalslopeslib.register_sloped_stomp(source_node_name, dest_node_name, stomp_desc)
+
+* Requires `poschangelib`. If the mod is not installed, this function will do nothing.
+* Register `stomp_desc` from all shapes of `source_node_name` to `dest_node_name`.
+
+Getters
+-------
+
+### naturalslopeslib.get_slope_defs(base_node_name, def_changes)
+
+* `base_node_name` the full block node name.
+* `def_changes` changes to apply from the base node definition.
+  * All the attributes are copied to the sloped nodes expect those ones which are replaced:
+    * `drawtype` set to "nodebox" or "mesh" according to the rendering mode
+    * `nodebox` or `mesh` is replaced
+    * `selection_box` and `collision_box` matching to the according mesh
+    * `paramtype` and `paramtype2` set to "light" and "facedir" respectively
+    * the group "natural_slope" is added (1 = straight, 2 = inner corner, 3 = outer corner, 4 = pike)
+    * the group "family:<full node name>" is added
+  * Then they are changed from def_changes. Use "nil" string to explicitely erase a value (an not nil).
+* returns a table of node definitions for straight slope, inner corner, outer corner and pike in that order.
+
+### naturalslopeslib.get_regular_node_name(slope_node_name)
+
+* `slope_node_name` a node name.
+* returns the name of the regular node (the unslopped one). Nil if it is not a slope node.
+* It may be unnaccurate as it checks only if the name follows the internal pattern for slope names.
+
+### naturalslopeslib.get_replacement(source_node_name)
+
+* `source_node_name` a registered node name.
+* returns a SlopeDef. Nil if no slopes are registered.
+
+### naturalslopeslib.get_replacement_id(source_id)
+
+* `source_id` the id of the node.
+* returns a ReplacementTable with node ids as values. Nil if no slopes are registered.
+
+### naturalslopeslib.get_all_shapes(source_node_name)
+
+Returns the node and all it's slope names in a table {source, straight, inner corner, outer corner, pike}. Returns {source} if there are no slopes for this node.
+* `source_node_name` The full block node name.
+
+
+Shape update API
+----------------
+
+### naturalslopeslib.is_free_for_shape_update(pos)
+
+* Checks if a node is considered free for defining which shape could be picked.
+* `pos` the position of the node to check (probably a neighbour of a candidate to shape update).
+* returns true if the node is free, false if occupide, nil if unknown (not loaded)
+
+### naturalslopeslib.area_is_free_for_shape_update(area, data, index)
+
+* Checks if a node is considered free for defining which shape could be picked.
+* Was previously named naturalslopeslib.area_is_free_for_erosion.
+* `area` VoxelArea to use.
+* `data` Data from VoxelManip.
+* `index` position in area.
+* returns true if the node is free, false if occupide, nil if unknown (not loaded)
+
+### naturalslopeslib.get_replacement_node(pos, node, [area, data, param2_data])
+
+* Get the replacement node according to it's surroundings. This function exists in two formats, for a single position or a VoxelArea
+* In both case, it returns the parameters to update the node or nil when no replacement is available.
+* For a single node
+  * `pos` the position of the node or index with VoxelArea.
+  * `node` the node at that position.
+  * returns a node for minetest.set_node.
+* For a VoxelArea
+  * `index` (the `pos` argument) the index within the area.
+  * `content_id` (the `node` argument) the node at that position or content id with VoxelArea.
+  * `area` the VoxelArea, nil for single position update (determines which type of the two previous arguments are).
+  * `data` Data from VoxelManip, nil for single position update.
+  * `param2_data` param2 data from VoxelManip, nil for single position update.
+  * Returns a table with id and param2_data.
+
+### naturalslopeslib.chance_update_shape(pos, node, factor, type)
+
+* Do shape update when random roll passes on a single node.
+* `pos` the position to update.
+* `node` the node at pos.
+* `factor` optional chance factor, when > 1 it have more chances to happen
+* `type` optional update type for chance factors. Either "mapgen", "stomp", "place" or "time". When not set, the chance factor is ignored (as if it is 1). It is cumulative with `factor`.
+* returns true if an update was done, false otherwise.
+
+### naturalslopeslib.update_shape(pos, node)
+
+* Do shape update disregarding chances.
+* `pos` the position to update.
+* `node` the node at pos.
+* returns true if an update was done, false otherwise.
+
+### naturalslopeslib.update_shape_on_walk(player, pos, node, desc, trigger_meta)
+
+* Callback for poschangelib, to get the same effect as naturalslopeslib.update_shape.
+
+
+Map generation
+--------------
+
+These functions allows to tweak the map generation to change the default behaviour.
+Which is updating an area on generation after other map generation functions.
+
+### naturalslopeslib.set_manual_map_generation()
+
+* Disables the default registration to handle the mapgen manually.
+* Once it is called, other mods should take care of handling shape update
+  on generation. Otherwise nothing is done.
+
+### naturalslopeslib.area_chance_update_shape(minp, maxp, factor, skip, type)
+
+* Massive shape update with VoxelManip. This is the VoxelManip on generation
+  method.
+* `minp` lower boundary of area.
+* `mapx` higher boundary of area.
+* `factor` Inverted factor for chance (0.1 means 10 times more likely to update)
+* `skip` optional random skip, roughfly ignore skip/2 to skip nodes.
+* `type` optional update type for chance factors. Either "mapgen", "stomp", "place" or "time". When not set, the chance factor is ignored (as if it is 1). It is cumulative with `factor`.
+
+### naturalslopeslib.register_progressive_area_update(minp, maxp, factor, skip, type)
+
+* Mark an area to be updated progressively. This is the Progressive on generation
+  method. The area is not updated instantly but added to a list.
+* `minp` lower boundary of area.
+* `mapx` higher boundary of area.
+* `factor` Inverted factor for chance (0.1 means 10 times more likely to update)
+* `skip` optional random skip, roughfly ignore skip/2 to skip nodes.
+* `type` optional update type for chance factors. Either "mapgen", "stomp", "place" or "time". When not set, the chance factor is ignored (as if it is 1). It is cumulative with `factor`.
+
+
+Settings getters
+----------------
+
+These functions get the current settings with the default value if not set.
+
+### naturalslopeslib.setting_enable_surface_update()
+
+* Returns true or false. Always false if twmlib is not available.
+
+### naturalslopeslib.setting_enable_shape_on_walk()
+
+* Returns true or false. Always false if poschangelib is not available.
+
+### naturalslopeslib.setting_enable_shape_on_generation()
+
+* Returns true or false. It may not reflect the actual behaviour if the default mapgen behaviour was disabled by naturalslopeslib.set_manual_map_generation.
+
+### naturalslopeslib.setting_generation_method()
+
+* Returns "VoxelManip" or "Progressive". It may not reflect the actual behaviour if the default mapgen behaviour was disabled by naturalslopeslib.set_manual_map_generation.
+
+### naturalslopeslib.setting_generation_factor()
+
+* Returns the chance factor for map generation to reflect the landscape age. It is cumulative with the "mapgen" chance factor of each node if any is defined. It may not reflect the actual behaviour if the default mapgen behaviour was disabled by naturalslopeslib.set_manual_map_generation.
+
+### naturalslopeslib.setting_generation_skip()
+
+* Returns the approximate number of nodes skipped for each node. It may not reflect the actual behaviour if the default mapgen behaviour was disabled by naturalslopeslib.set_manual_map_generation.
+
+### naturalslopeslib.setting_enable_shape_on_dig_place()
+
+* Returns true or false. This setting is read only on startup and may not reflect the actual value if it was changed while the server is running.
+
+### naturalslopeslib.setting_smooth_rendering()
+
+* Returns true or false. This setting is read only when registering nodes and may not reflect the actual value if it was changed while the server is running.
+
+
+Chat commands
+-------------
+
+### updshape
+
+* requires `server` privilege.
+* Force updating the node the player is standing upon.

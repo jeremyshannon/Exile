@@ -239,9 +239,9 @@ minetest.register_abm({
 		end
 
 		local pos2 = positions[math.random(#positions)]
-		local pos2_ab = pos2.y + 1
-		if minetest.get_node_light(pos, 0.5) >= 13
-		 and minetest.get_node_light(pos2_ab, 0.5) >= 13 then
+		local pos2_ab = {x = pos2.x, y = pos2.y + 1, z = pos2.z}
+		if minetest.get_node_light(pos, 0.5) >= 13 and
+		  minetest.get_node_light(pos2_ab, 0.5) >= 13 then
 			minetest.set_node(pos2, {name = node.name})
 		end
 

@@ -1,0 +1,41 @@
+## Update shape ABM
+
+# Enable or disable the automatic update of the shape of nodes at the surface (requires twmlib mod).
+naturalslopeslib_enable_surface_update (Timed surface update) bool true
+
+
+## Update shape on walk
+
+# Enable or disable shape update when walking on blocks (requires poschangelib mod).
+naturalslopeslib_enable_shape_on_walk (Enable shaping by walking on edges) bool true
+
+
+## Update shape on world generation
+
+# Enable or disable shape update when the world is generated.
+# This will probably put a lot of pressure on the server. Hopefully it doesn't happen that frequently.
+naturalslopeslib_enable_shape_on_generate (Shape update on generation) bool true
+
+# Define which method is used when generating a new area.
+#  - VoxelManip (default) is the most efficient one, but the area will be available only once it is completely updated and may be resource intensive. This is the preferred method as map generation is optimized not to impact the game.
+#  - Progressive is way much slower, but the area is available directly in it's untransformed shape. The nodes will be updated one after the other while the game is rather idle. This method is preferred on old single core CPU that cannot benefit from map generation optimization, if the areas are too long to emerge or if you like to see mountains smoothing themselves progressively.
+naturalslopeslib_generation_method (Generation method) enum VoxelManip VoxelManip,Progressive
+
+# Inverted chance factor on generation. The lesser, the more likely the node will be
+# generated in their updated shape. 0.1 means 10 time more likely.
+naturalslopeslib_update_shape_generate_factor (Generation factor) float 0.05 0
+
+# Skip n nodes when generating an area. The higher, the less nodes can be updated but it dramatically saves server resources.
+naturalslopeslib_update_shape_generate_skip (Generation skip nodes) int 0 0
+
+## Update shape on dig and place
+
+# Enable or disable shape update of neighbor nodes when one is placed or updated.
+naturalslopeslib_enable_shape_on_dig_place (Shape update on dig and place) bool true
+
+
+## Rendering
+
+# Enable smooth rendering instead of cubic. It will show some disconnections at some
+# points that won't be fixed and may be visually misleading with heights.
+naturalslopeslib_smooth_rendering (Smooth but glitched rendering) bool false

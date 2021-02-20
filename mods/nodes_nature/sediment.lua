@@ -288,7 +288,6 @@ for i in ipairs(list) do
 		s
 	)
 
-	--local slope_defs=naturalslopeslib.get_slope_defs("nodes_nature:"..name)
 	local slope_names = {"stairs:stair_"..name,
 			     "stairs:stair_inner_"..name,
 			     "stairs:stair_outer_"..name,

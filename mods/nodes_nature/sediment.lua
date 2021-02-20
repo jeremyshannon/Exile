@@ -330,8 +330,7 @@ for i in ipairs(list2) do
 	minetest.register_node("nodes_nature:"..name, {
 		description = desc,
 		tiles = {"nodes_nature_"..name..".png", "nodes_nature_"..dropped..".png",
-		{name = "nodes_nature_"..dropped..".png^nodes_nature_"..name.."_side.png",
-			tileable_vertical = false}},
+		{name = "nodes_nature_"..dropped..".png^nodes_nature_"..name.."_side.png"}},
 		stack_max = minimal.stack_max_bulky,
 		groups = g,
 		drop = "nodes_nature:"..dropped,
@@ -347,8 +346,7 @@ for i in ipairs(list2) do
 	minetest.register_node("nodes_nature:"..name.."_wet", {
 		description = "Wet "..desc,
 		tiles = {"nodes_nature_"..name..".png^nodes_nature_mud.png",
-		{name = "nodes_nature_"..dropped..".png^nodes_nature_"..name.."_side.png^nodes_nature_mud.png",
-			tileable_vertical = false}},
+		{name = "nodes_nature_"..dropped..".png^nodes_nature_"..name.."_side.png^nodes_nature_mud.png"}},
 		stack_max = minimal.stack_max_bulky,
 		groups = g2,
 		drop = "nodes_nature:"..dropped.."_wet",
@@ -444,7 +442,7 @@ for i in ipairs(list3) do
 		tiles = {
 			{name = "nodes_nature_"..type..".png^nodes_nature_ag_top.png"},
 			"nodes_nature_"..type..".png",
-			{name = "nodes_nature_"..type..".png^nodes_nature_ag_side.png",	tileable_vertical = false}},
+			{name = "nodes_nature_"..type..".png^nodes_nature_ag_side.png"}},
 		stack_max = minimal.stack_max_bulky,
 		groups = g,
 		sounds = s,
@@ -466,7 +464,7 @@ for i in ipairs(list3) do
 		tiles = {
 			{name = "nodes_nature_"..type..".png^nodes_nature_ag_top.png^nodes_nature_mud.png"},
 			"nodes_nature_"..type..".png^nodes_nature_mud.png",
-			{name = "nodes_nature_"..type..".png^nodes_nature_ag_side.png^nodes_nature_mud.png",	tileable_vertical = false}},
+			{name = "nodes_nature_"..type..".png^nodes_nature_ag_side.png^nodes_nature_mud.png"}},
 		stack_max = minimal.stack_max_bulky,
 		groups = g2,
 		sounds = sw,
@@ -489,7 +487,7 @@ for i in ipairs(list3) do
 		tiles = {
 			{name = "nodes_nature_"..type..".png^nodes_nature_ag_dep_top.png"},
 			"nodes_nature_"..type..".png",
-			{name = "nodes_nature_"..type..".png^nodes_nature_ag_dep_side.png",	tileable_vertical = false}},
+			{name = "nodes_nature_"..type..".png^nodes_nature_ag_dep_side.png"}},
 		stack_max = minimal.stack_max_bulky,
 		groups = g3,
 		sounds = s,
@@ -514,7 +512,7 @@ for i in ipairs(list3) do
 		tiles = {
 			{name = "nodes_nature_"..type..".png^nodes_nature_ag_dep_top.png^nodes_nature_mud.png"},
 			"nodes_nature_"..type..".png^nodes_nature_mud.png",
-			{name = "nodes_nature_"..type..".png^nodes_nature_ag_dep_side.png^nodes_nature_mud.png",	tileable_vertical = false}},
+			{name = "nodes_nature_"..type..".png^nodes_nature_ag_dep_side.png^nodes_nature_mud.png"}},
 		stack_max = minimal.stack_max_bulky,
 		groups = g4,
 		sounds = sw,

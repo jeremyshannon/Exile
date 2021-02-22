@@ -373,13 +373,17 @@ minetest.register_chatcommand("set_temp", {
     description = "Set the Climate active temperature",
 		privs = {privs=true},
     func = function(name, param)
+		newtemp = tonumber(param)
+		if not newtemp or newtemp < -100 or newtemp > 100 then
+		   return false, "Invalid temperature"
+		end
 		if minetest.check_player_privs(name, {set_temp = true}) then
-			climate.active_temp = tonumber(param)
+			climate.active_temp = newtemp
 
 			--only actually needed on log out,... but that doesn't work
 			store:set_float("temp", climate.active_temp)
 
-			return true, "Climate active temperature set to: "..param
+			return true, "Climate active temperature set to: "..newtemp
 
 		else
 			return false, "You need the set_temp privilege to use this command."

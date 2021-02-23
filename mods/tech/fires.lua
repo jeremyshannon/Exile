@@ -639,7 +639,7 @@ minetest.register_node('tech:large_charcoal_fire_smoldering', {
 
 --save usage into inventory
 local on_dig_fire = function(pos, node, digger)
-	if minetest.is_protected(pos, digger:get_player_name()) then
+	if not digger or minetest.is_protected(pos, digger:get_player_name()) then
 		return false
 	end
 

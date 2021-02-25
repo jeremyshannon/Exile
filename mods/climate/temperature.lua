@@ -639,7 +639,7 @@ local radiate_temp = function(target_pos, source_pos, temp_effect)
 
   if dist <=1 then
     --you are standing in it.
-    return temp_effect
+    return temp_effect * 6
   end
 
 

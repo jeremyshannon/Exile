@@ -19,6 +19,7 @@ local floor = math.floor
 --how long it takes seeds to mature (number of ticks down i.e. timer X bg = time)
 --18000 per season?
 local base_growth = 600
+local base_timer = 40
 
 ---------------------------
 -- Dig upwards
@@ -51,7 +52,7 @@ local function seed_soil_response(pos)
 	local ag_soil = minetest.get_item_group(node_under, "agricultural_soil")
 	local dep_ag_soil = minetest.get_item_group(node_under, "depleted_agricultural_soil")
 
-	local timer_min = 40
+	local timer_min = base_timer
 
 
 	--apply bonus malus by by soil type and wet
@@ -283,6 +284,8 @@ for i in ipairs(plantlist) do
 				local timer_min, timer_max = seed_soil_response(pos)
 				if timer_min then
 					minetest.get_node_timer(pos):start(math.random(timer_min, timer_max))
+				else
+				   minetest.get_node_timer(pos):start(base_timer)
 				end
 			end,
 
@@ -293,6 +296,8 @@ for i in ipairs(plantlist) do
 					local timer_min, timer_max = seed_soil_response(pos)
 					if timer_min then
 						minetest.get_node_timer(pos):start(math.random(timer_min, timer_max))
+					else
+					   minetest.get_node_timer(pos):start(base_timer)
 					end
 				end
 			end,
@@ -354,6 +359,8 @@ for i in ipairs(plantlist) do
 				local timer_min, timer_max = seed_soil_response(pos)
 				if timer_min then
 					minetest.get_node_timer(pos):start(math.random(timer_min, timer_max))
+				else
+				   minetest.get_node_timer(pos):start(base_timer)
 				end
 			end,
 
@@ -364,6 +371,8 @@ for i in ipairs(plantlist) do
 					local timer_min, timer_max = seed_soil_response(pos)
 					if timer_min then
 						minetest.get_node_timer(pos):start(math.random(timer_min, timer_max))
+					else
+					   minetest.get_node_timer(pos):start(base_timer)
 					end
 				end
 			end,
@@ -421,6 +430,8 @@ for i in ipairs(plantlist) do
 			local timer_min, timer_max = seed_soil_response(pos)
 			if timer_min then
 				minetest.get_node_timer(pos):start(math.random(timer_min, timer_max))
+			else
+			   minetest.get_node_timer(pos):start(base_timer)
 			end
 		end,
 
@@ -431,6 +442,8 @@ for i in ipairs(plantlist) do
 				local timer_min, timer_max = seed_soil_response(pos)
 				if timer_min then
 					minetest.get_node_timer(pos):start(math.random(timer_min, timer_max))
+				else
+				   minetest.get_node_timer(pos):start(base_timer)
 				end
 			end
 		end,
@@ -557,7 +570,7 @@ for i in ipairs(plantlist2) do
 			end,
 		})
 
-		--seedling
+		--bush seedling
 		minetest.register_node("nodes_nature:"..plantname.."_seedling", {
 			description = "Young "..plantdesc,
 			drawtype = "nodebox",
@@ -583,6 +596,8 @@ for i in ipairs(plantlist2) do
 				local timer_min, timer_max = seed_soil_response(pos)
 				if timer_min then
 					minetest.get_node_timer(pos):start(math.random(timer_min, timer_max))
+				else
+				   minetest.get_node_timer(pos):start(base_timer)
 				end
 			end,
 
@@ -593,6 +608,8 @@ for i in ipairs(plantlist2) do
 					local timer_min, timer_max = seed_soil_response(pos)
 					if timer_min then
 						minetest.get_node_timer(pos):start(math.random(timer_min, timer_max))
+					else
+					   minetest.get_node_timer(pos):start(base_timer)
 					end
 				end
 			end,
@@ -657,6 +674,8 @@ for i in ipairs(plantlist2) do
 				local timer_min, timer_max = seed_soil_response(pos)
 				if timer_min then
 					minetest.get_node_timer(pos):start(math.random(timer_min, timer_max))
+				else
+				   minetest.get_node_timer(pos):start(base_timer)
 				end
 			end,
 
@@ -667,6 +686,8 @@ for i in ipairs(plantlist2) do
 					local timer_min, timer_max = seed_soil_response(pos)
 					if timer_min then
 						minetest.get_node_timer(pos):start(math.random(timer_min, timer_max))
+					else
+					   minetest.get_node_timer(pos):start(base_timer)
 					end
 				end
 			end,
@@ -723,6 +744,8 @@ for i in ipairs(plantlist2) do
 				local timer_min, timer_max = seed_soil_response(pos)
 				if timer_min then
 					minetest.get_node_timer(pos):start(math.random(timer_min, timer_max))
+				else
+				   minetest.get_node_timer(pos):start(base_timer)
 				end
 			end,
 
@@ -733,6 +756,8 @@ for i in ipairs(plantlist2) do
 					local timer_min, timer_max = seed_soil_response(pos)
 					if timer_min then
 						minetest.get_node_timer(pos):start(math.random(timer_min, timer_max))
+					else
+					   minetest.get_node_timer(pos):start(base_timer)
 					end
 				end
 			end,

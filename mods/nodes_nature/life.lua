@@ -18,7 +18,8 @@ local floor = math.floor
 
 --how long it takes seeds to mature (number of ticks down i.e. timer X bg = time)
 --18000 per season?
-local base_growth = 600
+local base_growth = 600 / 2
+-- ^ FIXME: Shortened growing as workaround for non-growth away from player
 local base_timer = 40
 
 ---------------------------

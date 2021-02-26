@@ -179,11 +179,11 @@ local on_dig_seedling = function(pos,node, digger)
    end
 	local meta = minetest.get_meta(pos)
 	local growth = meta:get_int("growth")
+	if not growth then growth = base_growth end
 
 	local new_stack = ItemStack(node.name)
 	local stack_meta = new_stack:get_meta()
 	stack_meta:set_int("growth", growth)
-
 
 	minetest.remove_node(pos)
 	local player_inv = digger:get_inventory()
@@ -197,6 +197,7 @@ local after_place_seedling = function(pos, placer, itemstack, pointed_thing)
 	local meta = minetest.get_meta(pos)
 	local stack_meta = itemstack:get_meta()
 	local growth = stack_meta:get_int("growth")
+	if not growth then growth = base_growth end
 	meta:set_int("growth", growth)
 end
 

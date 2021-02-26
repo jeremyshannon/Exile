@@ -168,6 +168,39 @@ local function grow_seed(pos, seed_name, plant_name, place_p2)
 
 end
 
+---------------------------
+-- Save/restore seedling timers on dig/place
+--
+local on_dig_seedling = function(pos,node, digger)
+   if not digger then return false end
+
+   if minetest.is_protected(pos, digger:get_player_name()) then
+      return false
+   end
+	local meta = minetest.get_meta(pos)
+	local growth = meta:get_int("growth")
+
+	local new_stack = ItemStack(node.name)
+	local stack_meta = new_stack:get_meta()
+	stack_meta:set_int("growth", growth)
+
+
+	minetest.remove_node(pos)
+	local player_inv = digger:get_inventory()
+	if player_inv:room_for_item("main", new_stack) then
+		player_inv:add_item("main", new_stack)
+	else
+		minetest.add_item(pos, new_stack)
+	end
+end
+local after_place_seedling = function(pos, placer, itemstack, pointed_thing)
+	local meta = minetest.get_meta(pos)
+	local stack_meta = itemstack:get_meta()
+	local growth = stack_meta:get_int("growth")
+	meta:set_int("growth", growth)
+end
+
+
 
 -------------------------------------------------------------
 --
@@ -301,6 +334,12 @@ for i in ipairs(plantlist) do
 					end
 				end
 			end,
+			after_place_node = function(pos, placer, itemstack, pointed_thing)
+			   after_place_seedling(pos, placer, itemstack, pointed_thing)
+			end,
+			on_dig = function(pos, node, digger)
+			   on_dig_seedling(pos, node, digger)
+			end,
 		})
 
 
@@ -376,6 +415,12 @@ for i in ipairs(plantlist) do
 					end
 				end
 			end,
+			after_place_node = function(pos, placer, itemstack, pointed_thing)
+			   after_place_seedling(pos, placer, itemstack, pointed_thing)
+			end,
+			on_dig = function(pos, node, digger)
+			   on_dig_seedling(pos, node, digger)
+			end,
     })
 	end
 
@@ -446,6 +491,12 @@ for i in ipairs(plantlist) do
 				   minetest.get_node_timer(pos):start(base_timer)
 				end
 			end
+		end,
+		after_place_node = function(pos, placer, itemstack, pointed_thing)
+		   after_place_seedling(pos, placer, itemstack, pointed_thing)
+		end,
+		on_dig = function(pos, node, digger)
+		   on_dig_seedling(pos, node, digger)
 		end,
 	})
 
@@ -613,6 +664,12 @@ for i in ipairs(plantlist2) do
 					end
 				end
 			end,
+			after_place_node = function(pos, placer, itemstack, pointed_thing)
+			   after_place_seedling(pos, placer, itemstack, pointed_thing)
+			end,
+			on_dig = function(pos, node, digger)
+			   on_dig_seedling(pos, node, digger)
+			end,
 		})
 
 
@@ -691,6 +748,12 @@ for i in ipairs(plantlist2) do
 					end
 				end
 			end,
+			after_place_node = function(pos, placer, itemstack, pointed_thing)
+			   after_place_seedling(pos, placer, itemstack, pointed_thing)
+			end,
+			on_dig = function(pos, node, digger)
+			   on_dig_seedling(pos, node, digger)
+			end,
     })
 	end
 
@@ -760,6 +823,12 @@ for i in ipairs(plantlist2) do
 					   minetest.get_node_timer(pos):start(base_timer)
 					end
 				end
+			end,
+			after_place_node = function(pos, placer, itemstack, pointed_thing)
+			   after_place_seedling(pos, placer, itemstack, pointed_thing)
+			end,
+			on_dig = function(pos, node, digger)
+			   on_dig_seedling(pos, node, digger)
 			end,
 		})
 

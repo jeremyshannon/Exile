@@ -198,6 +198,9 @@ local after_place_seedling = function(pos, placer, itemstack, pointed_thing)
 	local meta = minetest.get_meta(pos)
 	local stack_meta = itemstack:get_meta()
 	local growth = stack_meta:get_int("growth")
+	if growth == 0 then -- new seeds have no meta
+	   growth = meta:get_int("growth") -- but it's set on the node already
+	end
 	if not growth then growth = base_growth end
 	meta:set_int("growth", growth)
 end

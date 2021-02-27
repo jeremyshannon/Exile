@@ -281,8 +281,13 @@ function crafting.perform_craft(name, inv, listname, outlistname, recipe)
 	end
 
 	-- Add output
-	inv:add_item(outlistname, recipe.output)
-
+	if inv:room_for_item("main", recipe.output) then
+	   inv:add_item(outlistname, recipe.output)
+	else
+	   local pos = minetest.get_player_by_name(name):get_pos()
+	   minetest.chat_send_player(name, "No room in inventory!")
+	   minetest.add_item(pos, recipe.output)
+	end
 	return true
 end
 

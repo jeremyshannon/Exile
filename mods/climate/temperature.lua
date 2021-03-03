@@ -730,3 +730,18 @@ climate.get_point_temp = function(pos)
 
 	return temp
 end
+
+--function for getting a temperature string set to the user's chosen scale
+climate.get_temp_string = function(v)
+   local scale = minetest.settings:get('exile_temp_scale')
+   local t = v .." °C"
+   if scale == "Fahrenheit" then
+      v = v / 5 * 9 + 32
+      t = v .." °F"
+   elseif scale == "Kelvin" then
+      v = v + 273.15
+      t = v .."K"
+   end
+   return t
+end
+

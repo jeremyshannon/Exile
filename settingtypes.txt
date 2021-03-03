@@ -1,0 +1,3 @@
+#Select the temperature scale to display
+exile_temp_scale (Temperature scale) enum Celsius Celsius,Fahrenheit,Kelvin
+

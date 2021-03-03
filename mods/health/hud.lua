@@ -239,7 +239,7 @@ local function temp(player, hud_data)
 	local meta = player:get_meta()
 	local v = meta:get_int("temperature")
 	local col = color_bodytemp(v)
-	local t = v .." °C"
+	local t = climate.get_temp_string(v)
 	local hud =  hud_data.body_temp_hud
 	player:hud_change(hud, "text", t)
 	player:hud_change(hud, "number", col)
@@ -251,7 +251,7 @@ local function enviro_temp(player, hud_data)
 	player_pos.y = player_pos.y + 0.6 --adjust to body height
 	local v = math.floor(climate.get_point_temp(player_pos))
 	local col = color_envirotemp(v, meta)
-	local t = v .." °C"
+	local t = climate.get_temp_string(v)
 	local hud =  hud_data.enviro_temp_hud
 	player:hud_change(hud, "text", t)
 	player:hud_change(hud, "number", col)

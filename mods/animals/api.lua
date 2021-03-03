@@ -904,8 +904,12 @@ function animals.hq_attack_eat(self,prty,tgtobj)
 			if dist > 3 then
 				return true
 			else
-				mobkit.lq_turn2pos(self,tpos)
-        local height = tgtobj:is_player() and 0.35 or tgtobj:get_luaentity().height*0.6 or 0
+			   mobkit.lq_turn2pos(self,tpos)
+			   local tgtheight = tgtobj:get_luaentity().height
+			   if tgtheight == nil then
+			      tgtheight = 0
+			   end
+        local height = tgtobj:is_player() and 0.35 or tgtheight*0.6
 				if tpos.y+height>pos.y then
 					lq_jumpattack_eat(self,tpos.y+height-pos.y,tgtobj)
 

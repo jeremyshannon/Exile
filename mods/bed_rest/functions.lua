@@ -171,6 +171,9 @@ local function lay_down(player, level, pos, bed_pos, state, skip)
 	if not player or not name then
 		return
 	end
+	local velo = player:get_player_velocity()
+	if velo.x ~= 0 then return end
+	if velo.z ~= 0 then return end
 
 	-- stand up
 	if state ~= nil and not state then

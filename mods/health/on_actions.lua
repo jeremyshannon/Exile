@@ -276,7 +276,9 @@ if minetest.settings:get_bool("enable_damage") then
         --[safe] comfort zone ->[low cost]->stress zone ->[high cost]-> danger zone->[damage]
 
         local comfort_low = meta:get_int("clothing_temp_min")
-      	local comfort_high = meta:get_int("clothing_temp_max")
+      	local comfort_high = meta:get_int("clothing_temp_max") + 1
+	-- comfort is rounded off in display, so you can be half a degree
+	-- over and still in the white. Don't confuse players by penalizing!
         local stress_low = comfort_low - 10
         local stress_high = comfort_high + 10
         local danger_low = stress_low - 40

@@ -288,13 +288,7 @@ for i in ipairs(list) do
 		s
 	)
 
-	local slope_names = {"stairs:stair_"..name,
-			     "stairs:stair_inner_"..name,
-			     "stairs:stair_outer_"..name,
-			     "stairs:slab_"..name}
-	naturalslopeslib.set_slopes("nodes_nature:"..name,
-				    slope_names[1], slope_names[2],
-				    slope_names[3], slope_names[4], 10)
+	naturalslopeslib.register_slope("nodes_nature:"..name, {}, 10)
 	naturalslopeslib.register_slope("nodes_nature:"..name.."_wet", {}, 10)
 	naturalslopeslib.register_slope("nodes_nature:"..name.."_wet_salty",
 					{}, 10)

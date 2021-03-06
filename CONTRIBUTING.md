@@ -3,22 +3,28 @@
 ## Initial setup
  Fork this repository on GitHub, using the fork button.
  Then clone your fork locally:
+
         $ git clone https://github.com/YOUR_USERNAME/Exile.git
 
  Add my repository as a remote
+
         $ git remote add -f upstream https://github.com/jeremyshannon/Exile
 
 ## To update your local copy
  Check out your master or Development branch, depending on which you're going to update
-        $ git checkout master
+
+                $ git checkout master
  Then pull from the corresponding upstream branch:
-        $ git pull --ff-only upsteam master
+
+                $ git pull --ff-only upsteam master
 
 ## Making changes
  Create a new branch for each PR you plan on doing:
-        $ git checkout -b BRANCH_NAME
+
+                $ git checkout -b BRANCH_NAME
  Make your changes and commit(s), then
-        $ git push origin BRANCH_NAME
+
+                $ git push origin BRANCH_NAME
 
  Now you can go to your github page and submit a pull request to the appropriate branch, via the handy web interface.
 

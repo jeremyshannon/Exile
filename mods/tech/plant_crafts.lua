@@ -142,7 +142,7 @@ end
 
 
 
-local function bake_bread(pos, selfname, name, length, heat)
+local function bake_bread(pos, selfname, name_cooked, name_burned, length, heat)
 	local meta = minetest.get_meta(pos)
 	local baking = meta:get_int("baking")
 
@@ -151,8 +151,8 @@ local function bake_bread(pos, selfname, name, length, heat)
 		return true
 	end
 
-  --exchange accumulated heat
-  climate.heat_transfer(pos, selfname)
+    --exchange accumulated heat
+    climate.heat_transfer(pos, selfname)
 
 	--check if above firing temp
 	local temp = climate.get_point_temp(pos)
@@ -160,38 +160,39 @@ local function bake_bread(pos, selfname, name, length, heat)
 
 	if baking <= 0 then
 		--finished firing
-		minetest.set_node(pos, {name = name})
-    minetest.check_for_falling(pos)
+		minetest.set_node(pos, {name = name_cooked})
+        minetest.check_for_falling(pos)
 		return false
   elseif temp < fire_temp then
     --not lit yet
     return true
 	elseif temp > fire_temp * 2 then
 		--too hot, burn
-		minetest.set_node(pos, {name = "air"})
+		minetest.set_node(pos, {name = name_burned})
     --Smoke
     minetest.sound_play("tech_fire_small",{pos=pos, max_hear_distance = 10, loop=false, gain=0.1})
     minetest.add_particlespawner({
-      amount = 2,
-      time = 0.5,
-      minpos = {x = pos.x - 0.1, y = pos.y, z = pos.z - 0.1},
-      maxpos = {x = pos.x + 0.1, y = pos.y + 0.5, z = pos.z + 0.1},
-      minvel = {x= 0, y= 0, z= 0},
-      maxvel = {x= 0.01, y= 0.06, z= 0.01},
-      minacc = {x= 0, y= 0, z= 0},
-      maxacc = {x= 0.01, y= 0.1, z= 0.01},
-      minexptime = 3,
-      maxexptime = 10,
-      minsize = 1,
-      maxsize = 4,
-      collisiondetection = true,
-      vertical = true,
-      texture = "tech_smoke.png",
-    })
-		return false
+          amount = 2,
+          time = 0.5,
+          minpos = {x = pos.x - 0.1, y = pos.y, z = pos.z - 0.1},
+          maxpos = {x = pos.x + 0.1, y = pos.y + 0.5, z = pos.z + 0.1},
+          minvel = {x= 0, y= 0, z= 0},
+          maxvel = {x= 0.01, y= 0.06, z= 0.01},
+          minacc = {x= 0, y= 0, z= 0},
+          maxacc = {x= 0.01, y= 0.1, z= 0.01},
+          minexptime = 3,
+          maxexptime = 10,
+          minsize = 1,
+          maxsize = 4,
+          collisiondetection = true,
+          vertical = true,
+          texture = "tech_smoke.png",
+        })
+	  return false
 	elseif temp >= fire_temp then
 		--do firing
 		meta:set_int("baking", baking - 1)
+		minetest.chat_send_all(dump(baking))
 		return true
 	end
 
@@ -218,7 +219,7 @@ minetest.register_node("tech:maraka_cake_unbaked", {
   end,
   on_timer = function(pos, elapsed)
     --finished product, length, heat
-    return bake_bread(pos, "tech:maraka_cake_unbaked", "tech:maraka_cake", 10, 160)
+    return bake_bread(pos, "tech:maraka_cake_unbaked", "tech:maraka_cake", "tech:maraka_cake_burned", 10, 160)
   end,
 })
 
@@ -249,7 +250,31 @@ minetest.register_node("tech:maraka_cake", {
   end,
 })
 
-
+--maraka cake, burned
+minetest.register_node("tech:maraka_cake_burned", {
+  description = "Maraka Cake Burned",
+  tiles = {"tech_flour_burned.png"},
+  stack_max = minimal.stack_max_medium * 4,
+  paramtype = "light",
+  sunlight_propagates = true,
+  --paramtype2 = "wallmounted",
+  drawtype = "nodebox",
+  node_box = {
+    type = "fixed",
+    fixed = {-0.28, -0.5, -0.28, 0.28, -0.32, 0.28},
+  },
+  groups = {crumbly = 3, falling_node = 1, dig_immediate = 3, flammable = 1,  temp_pass = 1},
+  sounds = nodes_nature.node_sound_dirt_defaults(),
+  on_use = function(itemstack, user, pointed_thing)
+    --food poisoning
+    if random() < 0.001 then
+      HEALTH.add_new_effect(user, {"Food Poisoning", 1})
+    end
+    --burned food has less impact
+    --hp_change, thirst_change, hunger_change, energy_change, temp_change, replace_with_item
+    return HEALTH.use_item(itemstack, user, 0, 0, 12, 7, 0)
+  end,
+})
 
 
 -----------
@@ -322,7 +347,7 @@ minetest.register_node("tech:mashed_anperal", {
   end,
   on_timer = function(pos, elapsed)
     --self, finished product, length, heat
-    return bake_bread(pos, "tech:mashed_anperal", "tech:mashed_anperal_cooked", 35, 100)
+    return bake_bread(pos, "tech:mashed_anperal", "tech:mashed_anperal_cooked", "tech:mashed_anperal_burned", 35, 100)
   end,
 })
 
@@ -347,6 +372,30 @@ minetest.register_node("tech:mashed_anperal_cooked", {
 
     --hp_change, thirst_change, hunger_change, energy_change, temp_change, replace_with_item
     return HEALTH.use_item(itemstack, user, 0, 24, 144, 84, 0)
+  end,
+})
+
+minetest.register_node("tech:mashed_anperal_burned", {
+  description = "Burned Anperla",
+  tiles = {"tech_flour_burned.png"},
+  stack_max = minimal.stack_max_medium/3,
+  paramtype = "light",
+  --sunlight_propagates = true,
+  drawtype = "nodebox",
+  node_box = {
+    type = "fixed",
+    fixed = {-5/16, -0.5, -5/16, 5/16, -1/16, 5/16},
+  },
+  groups = {crumbly = 3, falling_node = 1, dig_immediate = 3, flammable = 1,  temp_pass = 1},
+  sounds = nodes_nature.node_sound_dirt_defaults(),
+  on_use = function(itemstack, user, pointed_thing)
+    --food poisoning, lower chance on burned food
+    if random() < 0.001 then
+      HEALTH.add_new_effect(user, {"Food Poisoning", 1})
+    end
+    --burned food has less impact
+    --hp_change, thirst_change, hunger_change, energy_change, temp_change, replace_with_item
+    return HEALTH.use_item(itemstack, user, 0, 12, 72, 42, 0)
   end,
 })
 

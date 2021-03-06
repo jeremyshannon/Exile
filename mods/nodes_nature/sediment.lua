@@ -228,6 +228,8 @@ local list = {
 
 }
 
+local doslopes = minetest.settings:get_bool('exile_enableslopes')
+local slopechance = minetest.settings:get('exile_slopechance') or 20
 
 for i in ipairs(list) do
 	local name = list[i][1]
@@ -288,10 +290,11 @@ for i in ipairs(list) do
 		s
 	)
 
-	naturalslopeslib.register_slope("nodes_nature:"..name, {}, 10)
-	naturalslopeslib.register_slope("nodes_nature:"..name.."_wet", {}, 10)
-	naturalslopeslib.register_slope("nodes_nature:"..name.."_wet_salty",
-					{}, 10)
+	if doslopes then
+	   naturalslopeslib.register_slope("nodes_nature:"..name, {}, slopechance)
+	   naturalslopeslib.register_slope("nodes_nature:"..name.."_wet", {}, slopechance)
+	   naturalslopeslib.register_slope("nodes_nature:"..name.."_wet_salty", {}, slopechance)
+	end
 end
 
 
@@ -332,7 +335,6 @@ for i in ipairs(list2) do
 		_wet_salty_name = "nodes_nature:"..dropped.."_wet_salty",
 		_ag_soil = "nodes_nature:"..dropped.."_agricultural_soil",
 	})
-	naturalslopeslib.register_slope("nodes_nature:"..name, {}, 10)
 
 
 	--register wet
@@ -347,7 +349,10 @@ for i in ipairs(list2) do
 		_dry_name = "nodes_nature:"..name,
 		_ag_soil = "nodes_nature:"..dropped.."_agricultural_soil_wet",
 	})
-	naturalslopeslib.register_slope("nodes_nature:"..name.."_wet", {}, 10)
+	if doslopes then
+	   naturalslopeslib.register_slope("nodes_nature:"..name, {}, slopechance)
+	   naturalslopeslib.register_slope("nodes_nature:"..name.."_wet", {}, slopechance)
+	end
 
 	--no salty as salty kills the surface life
 	--wet salty is just the raw sediment version.

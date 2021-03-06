@@ -8,8 +8,14 @@ exile_nobreaktaker (Disable the notice to take a break) bool false
 #Set to 30 minutes, it will be a constant nag after ~1 hour
 #At 60 it will be constant at two hours, at 90 it will take 3 hours
 exile_breaktime	   (Set delay before the first break notice) int 30 30 90
+exile_enableslopes (Create natural slopes on mapgen) bool true
 
 [Natural Slopes settings]
+
+# Set the percentage of non-slopes that appear on map generation
+#
+# 10% = 90% chance of a slope in a given spot, 90 = 10% chance
+exile_slopechance (Non-Slope percentage) int 20 0 100
 
 ## Update shape ABM
 

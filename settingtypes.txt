@@ -1,5 +1,13 @@
 #Select the temperature scale to display
 exile_temp_scale (Temperature scale) enum Celsius Celsius,Fahrenheit,Kelvin
+exile_nobreaktaker (Disable the notice to take a break) bool false
+
+#Set from 30 to 90 minutes for the first notice.
+#
+#After each notice the time before the next is halved.
+#Set to 30 minutes, it will be a constant nag after ~1 hour
+#At 60 it will be constant at two hours, at 90 it will take 3 hours
+exile_breaktime	   (Set delay before the first break notice) int 30 30 90
 
 [Natural Slopes settings]
 

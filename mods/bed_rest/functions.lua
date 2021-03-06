@@ -17,7 +17,8 @@ local pi = math.pi
 minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
   bed_rest.session_start[name] = os.time()
-  bed_rest.session_limit[name] = 1800 --30min
+  -- 30 minutes is 1800 ticks, so multiply by 60
+  bed_rest.session_limit[name] = minetest.settings:get('exile_breaktime') * 60
 
 end
 )
@@ -119,6 +120,9 @@ local function break_taker(name)
 	local sess_l = bed_rest.session_limit[name]
 	local tn = os.time()
 
+	if minetest.settings:get('exile_nobreaktaker') then
+	   return
+	end
 
 	if os.difftime(tn, ts) > sess_l then
 

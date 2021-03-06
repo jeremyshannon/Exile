@@ -637,11 +637,13 @@ end
 local radiate_temp = function(target_pos, source_pos, temp_effect)
   local dist = vector.distance(target_pos, source_pos)
 
-  if dist <=1 then
+  if dist <=1 and target_pos.y > source_pos.y then
     --you are standing in it.
     return temp_effect * 6
+  elseif dist <= 1 then
+    -- just next to fire
+    return temp_effect
   end
-
 
   --{{b,o},{b,o},{b,o}}
   local sight_lines = get_los(source_pos, target_pos)

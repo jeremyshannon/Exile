@@ -37,7 +37,7 @@ end
 
 
 
-local function cook(pos, selfname, name, length, heat)
+local function cook(pos, selfname, name_cooked, name_burned, length, heat)
 	local meta = minetest.get_meta(pos)
 	local baking = meta:get_int("baking")
 
@@ -55,7 +55,7 @@ local function cook(pos, selfname, name, length, heat)
 
 	if baking <= 0 then
 		--finished firing
-		minetest.set_node(pos, {name = name})
+		minetest.set_node(pos, {name = name_cooked})
     minetest.check_for_falling(pos)
 		return false
   elseif temp < fire_temp then
@@ -63,7 +63,7 @@ local function cook(pos, selfname, name, length, heat)
     return true
 	elseif temp > fire_temp * 2 then
 		--too hot, burn
-		minetest.set_node(pos, {name = "air"})
+		minetest.set_node(pos, {name = name_burned})
     --Smoke
     minetest.sound_play("tech_fire_small",{pos=pos, max_hear_distance = 10, loop=false, gain=0.1})
     minetest.add_particlespawner({
@@ -155,7 +155,8 @@ local list = {
     0, 1, -2,
     1, 100,
     0, 2, 1,
-		chance_food_poison*2, chance_food_parasite
+    chance_food_poison*2, chance_food_parasite,
+    -1, 1, -3
   },
   {
     "invert_large",
@@ -166,7 +167,8 @@ local list = {
     1, 3, -6,
     3, 100,
     1, 6, 3,
-		chance_food_poison*4, chance_food_parasite*2
+    chance_food_poison*4, chance_food_parasite*2,
+    -1, 2, -7
   },
   {
     "bird_small",
@@ -177,7 +179,8 @@ local list = {
     1, 5, -4,
     6, 100,
     1, 10, 2,
-		chance_food_poison, chance_food_parasite*2
+    chance_food_poison, chance_food_parasite*2,
+    -1, 3, -5
   },
   {
     "fish_small",
@@ -188,7 +191,8 @@ local list = {
     1, 5, -4,
     6, 100,
     1, 10, 2,
-		chance_food_poison, chance_food_parasite*2
+    chance_food_poison, chance_food_parasite*2,
+    -1, 3, -5
   },
   {
     "fish_large",
@@ -199,7 +203,8 @@ local list = {
     3, 15, -12,
     18, 100,
     3, 30, 6,
-		chance_food_poison*2, chance_food_parasite*4
+    chance_food_poison*2, chance_food_parasite*4,
+    -1, 8, -13
   },
 
 }
@@ -221,8 +226,9 @@ for i in ipairs(list) do
   local eat_cooked_energy = list[i][13]
 	local c_fpoison = list[i][14]
 	local c_fparasite = list[i][15]
-
-
+  local eat_burned_thirst = list[i][16]
+  local eat_burned_hunger = list[i][17]
+  local eat_burned_energy = list[i][18]
 
   --raw
   minetest.register_node("animals:carcass_"..name, {
@@ -259,7 +265,7 @@ for i in ipairs(list) do
     end,
     on_timer = function(pos, elapsed)
       --finished product, length, heat
-      return cook(pos, "animals:carcass_"..name, "animals:carcass_"..name.."_cooked", cook_diff, cook_heat)
+      return cook(pos, "animals:carcass_"..name, "animals:carcass_"..name.."_cooked", "animals:carcass_"..name.."_burned", cook_diff, cook_heat)
     end,
   })
 
@@ -286,6 +292,32 @@ for i in ipairs(list) do
 
       --hp_change, thirst_change, hunger_change, energy_change, temp_change, replace_with_item
       return HEALTH.use_item(itemstack, user, 0, eat_cooked_thirst, eat_cooked_hunger, eat_cooked_energy, 0)
+    end,
+  })
+
+
+ --burned food only gives ~50% of the energy but makes thirthy and more exhausted 
+  minetest.register_node("animals:carcass_"..name.. "_burned", {
+    description = 'Burned '..desc,
+    tiles = {"animals_carcass_burned.png"},
+    drawtype = "nodebox",
+    paramtype = "light",
+    node_box = {
+      type = "fixed",
+      fixed = box
+    },
+    stack_max = stack,
+    groups = {snappy = 3, dig_immediate = 3, falling_node = 1, temp_pass = 1},
+    sounds = nodes_nature.node_sound_defaults(),
+    on_use = function(itemstack, user, pointed_thing)
+
+      --food poisoning has lower chance, burned food has less salmonella
+      if random() < c_fpoison*0.05 then
+        HEALTH.add_new_effect(user, {"Food Poisoning", 1})
+      end
+
+      --hp_change, thirst_change, hunger_change, energy_change, temp_change, replace_with_item
+      return HEALTH.use_item(itemstack, user, 0, eat_burned_thirst, eat_burned_hunger, eat_burned_energy, 0)
     end,
   })
 

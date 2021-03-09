@@ -192,7 +192,6 @@ local function bake_bread(pos, selfname, name_cooked, name_burned, length, heat)
 	elseif temp >= fire_temp then
 		--do firing
 		meta:set_int("baking", baking - 1)
-		minetest.chat_send_all(dump(baking))
 		return true
 	end
 

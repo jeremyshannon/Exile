@@ -275,10 +275,22 @@ minetest.register_node("tech:maraka_cake_burned", {
   end,
 })
 
+--migrate old items to more standardized, no-typo names
+minetest.register_alias("tech:peeled_anperal_tuber",
+			"tech:anperla_tuber_peeled")
+minetest.register_alias("tech:cooked_anperal_tuber",
+			"tech:anperla_tuber_cooked")
+minetest.register_alias("tech:mashed_anperal",
+			"tech:mashed_anperla")
+minetest.register_alias("tech:mashed_anperal_cooked",
+			"tech:mashed_anperla_cooked")
+minetest.register_alias("tech:mashed_anperal_burned",
+			"tech:mashed_anperla_burned")
+
 
 -----------
 --Anperla
-minetest.register_node("tech:peeled_anperal_tuber", {
+minetest.register_node("tech:anperla_tuber_peeled", {
 	description = "Peeled Anperla Tuber",
 	tiles = {"tech_flour.png"},
 	stack_max = minimal.stack_max_medium,
@@ -297,11 +309,11 @@ minetest.register_node("tech:peeled_anperal_tuber", {
   end,
   on_timer = function(pos, elapsed)
     --self, finished product, length, heat
-    return bake_bread(pos, "tech:peeled_anperal_tuber", "tech:cooked_anperal_tuber", 7, 100)
+    return bake_bread(pos, "tech:peeled_anperla_tuber", "tech:cooked_anperla_tuber", 7, 100) 
   end,
 })
 
-minetest.register_node("tech:cooked_anperal_tuber", {
+minetest.register_node("tech:anperla_tuber_cooked", {
 	description = "Cooked Anperla Tuber",
 	tiles = {"tech_flour_bitter.png"},
 	stack_max = minimal.stack_max_medium * 2,
@@ -327,7 +339,7 @@ minetest.register_node("tech:cooked_anperal_tuber", {
 
 
 --mash (a way to bulk cook tubers - 6 at once)
-minetest.register_node("tech:mashed_anperal", {
+minetest.register_node("tech:mashed_anperla", {
 	description = "Mashed Anperla (uncooked)",
 	tiles = {"tech_flour.png"},
 	stack_max = minimal.stack_max_medium/6,
@@ -346,11 +358,11 @@ minetest.register_node("tech:mashed_anperal", {
   end,
   on_timer = function(pos, elapsed)
     --self, finished product, length, heat
-    return bake_bread(pos, "tech:mashed_anperal", "tech:mashed_anperal_cooked", "tech:mashed_anperal_burned", 35, 100)
+    return bake_bread(pos, "tech:mashed_anperla", "tech:mashed_anperla_cooked", "tech:mashed_anperla_burned", 35, 100)
   end,
 })
 
-minetest.register_node("tech:mashed_anperal_cooked", {
+minetest.register_node("tech:mashed_anperla_cooked", {
 	description = "Mashed Anperla",
 	tiles = {"tech_flour_bitter.png"},
 	stack_max = minimal.stack_max_medium/3,
@@ -374,7 +386,7 @@ minetest.register_node("tech:mashed_anperal_cooked", {
   end,
 })
 
-minetest.register_node("tech:mashed_anperal_burned", {
+minetest.register_node("tech:mashed_anperla_burned", {
   description = "Burned Anperla",
   tiles = {"tech_flour_burned.png"},
   stack_max = minimal.stack_max_medium/3,
@@ -439,7 +451,7 @@ crafting.register_recipe({
 --peel tubers
 crafting.register_recipe({
 	type = "crafting_spot",
-	output = "tech:peeled_anperal_tuber",
+	output = "tech:peeled_anperla_tuber",
 	items = {"nodes_nature:anperla_seed"},
 	level = 1,
 	always_known = true,
@@ -447,7 +459,7 @@ crafting.register_recipe({
 
 crafting.register_recipe({
 	type = "mortar_and_pestle",
-	output = "tech:peeled_anperal_tuber",
+	output = "tech:peeled_anperla_tuber",
 	items = {"nodes_nature:anperla_seed"},
 	level = 1,
 	always_known = true,
@@ -456,7 +468,7 @@ crafting.register_recipe({
 
 crafting.register_recipe({
 	type = "mortar_and_pestle",
-	output = "tech:peeled_anperal_tuber 6",
+	output = "tech:peeled_anperla_tuber 6",
 	items = {"nodes_nature:anperla_seed 6"},
 	level = 1,
 	always_known = true,
@@ -465,8 +477,8 @@ crafting.register_recipe({
 --mash
 crafting.register_recipe({
 	type = "mortar_and_pestle",
-	output = "tech:mashed_anperal",
-	items = {"tech:peeled_anperal_tuber 6"},
+	output = "tech:mashed_anperla",
+	items = {"tech:peeled_anperla_tuber 6"},
 	level = 1,
 	always_known = true,
 })

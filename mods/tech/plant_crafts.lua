@@ -157,6 +157,9 @@ local function bake_bread(pos, selfname, name_cooked, name_burned, length, heat)
 	--check if above firing temp
 	local temp = climate.get_point_temp(pos)
 	local fire_temp = heat
+	if temp == nil then
+	   return
+	end
 
 	if baking <= 0 then
 		--finished firing

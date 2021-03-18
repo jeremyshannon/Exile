@@ -130,3 +130,13 @@ Thanks also to all who have given feedback, fixes etc.
 - loose wattle
 - mashed anperla
 - misc minor fixes and balancing
+
+# 0.2.3
+- new dependency: naturalslopeslib
+- ability to throw torches for light
+- settings for breaktaker
+- ability to display temperature in Celsius, Fahrenheit, or Kelvin
+- food burns instead of vanishing, thanks to ts
+- farming improvements
+- fixes for fire and rain
+- many fixes for crashes and bugs

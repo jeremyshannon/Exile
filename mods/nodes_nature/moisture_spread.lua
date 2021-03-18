@@ -82,7 +82,7 @@ local function thaw_frozen(pos, node)
 			minetest.check_for_falling(p)
 
 		elseif name == "nodes_nature:snow_block" then
-			minetest.set_node(p, {name = "nodes_nature:freshwater_flowing"})
+			minetest.set_node(p, {name = "nodes_nature:freshwater_source"})
 			minetest.check_for_falling(p)
 
 		elseif name == "nodes_nature:snow" then

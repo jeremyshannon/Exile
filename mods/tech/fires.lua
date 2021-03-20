@@ -196,7 +196,7 @@ minetest.register_node("tech:charcoal", {
 -- extinguish on punch
 --
 
-local function extinguish_fire(pos, puncher, itemstack, ext_name)
+local function extinguish_fire(pos, puncher, ext_name)
 	--you must be holding something to smother it with or you get burned
 	--hit it with fertilizer to restore
 	local itemstack = puncher:get_wielded_item()
@@ -275,7 +275,7 @@ minetest.register_node('tech:small_wood_fire', {
 	sounds = nodes_nature.node_sound_dirt_defaults(),
 
 	on_punch = function(pos, node, puncher, pointed_thing)
-		extinguish_fire(pos, puncher, itemstack, 'tech:small_wood_fire_ext')
+		extinguish_fire(pos, puncher, 'tech:small_wood_fire_ext')
 	end,
 
 	on_construct = function(pos)
@@ -318,7 +318,7 @@ minetest.register_node('tech:large_wood_fire', {
 	sounds = nodes_nature.node_sound_dirt_defaults(),
 
 	on_punch = function(pos, node, puncher, pointed_thing)
-		extinguish_fire(pos, puncher, itemstack, 'tech:large_wood_fire_ext')
+		extinguish_fire(pos, puncher, 'tech:large_wood_fire_ext')
 	end,
 
 	on_construct = function(pos)
@@ -370,7 +370,7 @@ minetest.register_node('tech:small_wood_fire_smoldering', {
 	sounds = nodes_nature.node_sound_dirt_defaults(),
 
 	on_punch = function(pos, node, puncher, pointed_thing)
-		extinguish_fire(pos, puncher, itemstack, 'tech:small_wood_fire_ext')
+		extinguish_fire(pos, puncher, 'tech:small_wood_fire_ext')
 	end,
 
 	on_construct = function(pos)
@@ -410,7 +410,7 @@ minetest.register_node('tech:large_wood_fire_smoldering', {
 	sounds = nodes_nature.node_sound_dirt_defaults(),
 
 	on_punch = function(pos, node, puncher, pointed_thing)
-		extinguish_fire(pos, puncher, itemstack, 'tech:large_wood_fire_ext')
+		extinguish_fire(pos, puncher, 'tech:large_wood_fire_ext')
 	end,
 
 	on_construct = function(pos)
@@ -462,7 +462,7 @@ minetest.register_node('tech:small_charcoal_fire', {
 	sounds = nodes_nature.node_sound_dirt_defaults(),
 
 	on_punch = function(pos, node, puncher, pointed_thing)
-		extinguish_fire(pos, puncher, itemstack, 'tech:small_charcoal_fire_ext')
+		extinguish_fire(pos, puncher, 'tech:small_charcoal_fire_ext')
 	end,
 
 	on_construct = function(pos)
@@ -505,7 +505,7 @@ minetest.register_node('tech:large_charcoal_fire', {
 	sounds = nodes_nature.node_sound_dirt_defaults(),
 
 	on_punch = function(pos, node, puncher, pointed_thing)
-		extinguish_fire(pos, puncher, itemstack, 'tech:large_charcoal_fire_ext')
+		extinguish_fire(pos, puncher, 'tech:large_charcoal_fire_ext')
 	end,
 
 	on_construct = function(pos)
@@ -557,7 +557,7 @@ minetest.register_node('tech:small_charcoal_fire_smoldering', {
 	sounds = nodes_nature.node_sound_dirt_defaults(),
 
 	on_punch = function(pos, node, puncher, pointed_thing)
-		extinguish_fire(pos, puncher, itemstack, 'tech:small_charcoal_fire_ext')
+		extinguish_fire(pos, puncher, 'tech:small_charcoal_fire_ext')
 	end,
 
 	on_construct = function(pos)
@@ -597,7 +597,7 @@ minetest.register_node('tech:large_charcoal_fire_smoldering', {
 	sounds = nodes_nature.node_sound_dirt_defaults(),
 
 	on_punch = function(pos, node, puncher, pointed_thing)
-		extinguish_fire(pos, puncher, itemstack, 'tech:large_charcoal_fire_ext')
+		extinguish_fire(pos, puncher, 'tech:large_charcoal_fire_ext')
 	end,
 
 	on_construct = function(pos)

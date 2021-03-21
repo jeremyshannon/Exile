@@ -10,6 +10,9 @@ Exile should be in games folder like so:
 
 Minetest > games > exile > mods/menu/... etc
 
+Since 0.2.3, Exile requires naturalslopeslib. If you're installing the source
+from git, you'll need to install nsl as well. Extract it into the exile mods/
+folder.
 
 ### Gameplay
 Challenging, at times brutal, wilderness survival with simple technology.

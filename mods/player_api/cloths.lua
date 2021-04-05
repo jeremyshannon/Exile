@@ -123,15 +123,10 @@ function player_api.set_cloths(player)
 	local inv = player:get_inventory()
 	inv:set_size("cloths", 8)
 
-	if gender == "male" then
-		inv:add_item("cloths", 'player_api:cloth_male_upper_default')
-		inv:add_item("cloths", 'player_api:cloth_male_lower_default')
-	else
-		inv:add_item("cloths", 'player_api:cloth_female_head_default')
-		inv:add_item("cloths", 'player_api:cloth_female_upper_default')
-		inv:add_item("cloths", 'player_api:cloth_female_lower_default')
+	if gender == "female" then
+		--inv:add_item("cloths", 'player_api:cloth_lower_underwear_default')
+		--TODO: Add a bra for female characters
 	end
-	inv:add_item("cloths", 'player_api:cloth_unisex_footwear_default')
 end
 
 local cloth_pos = {
@@ -163,7 +158,7 @@ function player_api.compose_cloth(player)
 		elseif cloth_type == 4 then
 			footwear_ItemStack = cloth_itemstack._cloth_texture
 		end
-		if cloth_itemstack._cloth_attach then
+		if cloth_itemstack and cloth_itemstack._cloth_attach then
 			attached_cloth[#attached_cloth+1] = cloth_itemstack._cloth_attach
 		end
 	end

@@ -387,7 +387,7 @@ lore.generate_bio = function(player)
   local text = ""
 
   local meta = player:get_meta()
-  local gend = gender[random(#gender)]
+  local gend = player_api:get_gender(player)
 
   local persona = personality[random(#personality)]
   local virt = virtue[random(#virtue)]

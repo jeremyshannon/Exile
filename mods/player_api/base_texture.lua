@@ -35,6 +35,7 @@ function player_api.get_base_texture_table(player)
 	local base_texture_str = meta:get_string("base_texture")
 	if base_texture_str == nil or base_texture_str == "" then
 		player_api.set_base_textures(player)
+		base_texture_str = player:get_meta():get_string("base_texture")
 	end
 	local base_texture = minetest.deserialize(base_texture_str)
 	return base_texture

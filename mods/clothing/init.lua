@@ -28,16 +28,24 @@ sfinv.register_page("clothing:clothing", {
 		local formspec = clothing_formspec..
 		"label[3,0.4; Min Temperature Tolerance: " .. cur_tmin .. " ]"..
 		"label[3,1; Max Temperature Tolerance: " .. cur_tmax .. " ]"..
-		"list[detached:"..name.."_clothing;clothing;0,0.5;2,3;]"..
+		--"list[detached:"..name.."_clothing;clothing;0,0.5;2,3;]"..
+		"list[current_player;cloths;0,0.5;2,3;]" ..
 		"listring[current_player;main]"..
-		"listring[detached:"..name.."_clothing;clothing]"
+		--"listring[detached:"..name.."_clothing;clothing]"
+		"listring[current_player;cloths]"
 		return sfinv.make_formspec(player, context,
 		formspec, false)
 	end
 })
 
-
-
+minetest.register_on_player_receive_fields(function(player, formname, fields)
+	if not player or not fields.quit then
+		return
+	end
+	local pn = player:get_player_name()
+	player_api.set_texture(player)
+	return true
+end)
 
 
 --functions

@@ -47,6 +47,53 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	return true
 end)
 
+minetest.register_allow_player_inventory_action(function(player, action, inventory, inventory_info)
+	local stack, from_inv, to_index
+	if action == "move" and inventory_info.to_list == "cloths" then
+		if inventory_info.from_list == inventory_info.to_list then --for moving inside the 'cloths' inventory
+			return 1
+		end
+		--for moving items from player inventory list 'main' to 'cloths'
+		from_inv = "main"
+		to_index = inventory_info.to_index
+		stack = inventory:get_stack(inventory_info.from_list, inventory_info.from_index)
+	elseif action == "put" and inventory_info.listname == "cloths" then
+		--for moving from node inventory 'closet' to player inventory 'cloths'
+		from_inv = "closet"
+		to_index = inventory_info.index
+		stack = inventory_info.stack
+	else
+		return
+	end
+	if stack then
+		local stack_name = stack:get_name()
+		local item_group = minetest.get_item_group(stack_name , "cloth")
+		if item_group == 0 then --not a cloth
+			return 0
+		end
+		--search for another cloth of the same type
+		local player_inv = player:get_inventory()
+		local cloth_list = player_inv:get_list("cloths")
+		for i = 1, #cloth_list do
+			local cloth_name = cloth_list[i]:get_name()
+			local cloth_type = minetest.get_item_group(cloth_name, "cloth")
+			if cloth_type == item_group then
+				if player_inv:get_stack("cloths", to_index):get_count() == 0 then --if put on an empty slot
+					if from_inv == "main" then
+						if player_inv:room_for_item("main", cloth_name) then
+							player_inv:remove_item("cloths", cloth_name)
+							player_inv:add_item("main", cloth_name)
+							return 1
+						end
+					end
+				end
+				return 0
+			end
+		end
+		return 1
+	end
+	return 0
+end)
 
 --functions
 

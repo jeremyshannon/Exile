@@ -23,8 +23,8 @@ local random = math.random
 
 ----------------------------------------------------------
 local gender = {
-  "he",
-  "she"
+   male= "he",
+   female= "she"
 }
 
 --Big Five
@@ -387,7 +387,7 @@ lore.generate_bio = function(player)
   local text = ""
 
   local meta = player:get_meta()
-  local gend = player_api:get_gender(player)
+  local gend = player_api.get_gender(player)
 
   local persona = personality[random(#personality)]
   local virt = virtue[random(#virtue)]
@@ -399,7 +399,7 @@ lore.generate_bio = function(player)
   text =
     "\n "..persona.." and "..virt..","..
     "\n "..your_name.." had lived "..lif.." life,"..
-    "\n until one day "..gend.." "..your_woe.."...."
+    "\n until one day "..gender[gend].." "..your_woe.."...."
 
     meta:set_string("bio", text)
 

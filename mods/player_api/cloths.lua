@@ -43,7 +43,7 @@ function player_api.register_cloth(name, def)
 		tooltip = tooltip.."\n".. minetest.colorize(gender_color, gender)
 		description = def.description .. "\n" .. tooltip
 	end
-	minetest.register_craftitem(name, {
+	newdef = {
 		description = description or nil,
 		inventory_image = def.inventory_image or nil,
 		wield_image = def.wield_image or nil,
@@ -54,7 +54,14 @@ function player_api.register_cloth(name, def)
 		_cloth_preview = def.preview or nil,
 		_cloth_gender = def.gender or nil,
 		groups = def.groups or nil,
-	})
+	}
+	if def.customfields then
+	   for k, d in pairs(def.customfields) do
+	      newdef[k] = d
+	   end
+	end
+	
+	minetest.register_craftitem(name, newdef)
 end
 
 player_api.register_cloth("player_api:cloth_female_upper_default", {

@@ -216,7 +216,7 @@ crafting.register_recipe({
 player_api.register_cloth("tech:light_fabric_tunic", {
 	description = "Light Fabric Tunic",
 	inventory_image = "tech_inv_light_fabric_tunic.png",
-	texture = "tech_light_fabric_tunic.png",
+	texture = "tech_uv_light_fabric_tunic.png",
 	stack_max = 1,
 	groups = {cloth = 2, clothing_shirt = 1,},
 	temp_min = 3,

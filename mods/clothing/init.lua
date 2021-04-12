@@ -38,13 +38,11 @@ sfinv.register_page("clothing:clothing", {
 	end
 })
 
-minetest.register_on_player_receive_fields(function(player, formname, fields)
-	if not player or not fields.quit then
-		return
-	end
-	local pn = player:get_player_name()
-	player_api.set_texture(player)
-	return true
+minetest.register_on_player_inventory_action(function(player, action, inventory, inventory_info)
+      if inventory_info.to_list == "cloths" or inventory_info.from_list == "cloths" then
+	 clothing:update_temp(player)
+	 player_api.set_texture(player)
+      end
 end)
 
 minetest.register_allow_player_inventory_action(function(player, action, inventory, inventory_info)
@@ -83,6 +81,8 @@ minetest.register_allow_player_inventory_action(function(player, action, invento
 						if player_inv:room_for_item("main", cloth_name) then
 							player_inv:remove_item("cloths", cloth_name)
 							player_inv:add_item("main", cloth_name)
+							print("Added clothing, updating temp")
+							update_temp(player)
 							return 1
 						end
 					end

@@ -55,7 +55,7 @@ clothing.run_callbacks = function(self, callback, player, index, stack)
 	end
 end
 
-clothing.set_player_clothing = function(self, player)
+clothing.update_temp = function(self, player)
 -- set clothing and update comfortable temperature range
 --[[
 clothing temp_min: subtracted from minimum temperature tolerance
@@ -75,56 +75,32 @@ note: ranges are
 ]]
 
 -- default range, no clothes yet
-local temp_min = 20
-local temp_max = 30
+   local temp_min = 20
+   local temp_max = 30
 
    if not player then
 		return
 	end
 	local name = player:get_player_name()
-
-	local layer = {
-		clothing = {},
-		cape = {},
-	}
-	local meta = player:get_meta()
-	local clothing_meta = meta:get_string("clothing:inventory")
-	local clothes = clothing_meta and minetest.deserialize(clothing_meta) or {}
-
-	local capes = {}
-	for i=1, 6 do
-		local stack = ItemStack(clothes[i])
+	local inv = player:get_inventory():get_list("cloths")
+	for i=1, 5 do
+		local stack = ItemStack(inv[i])
 		if stack:get_count() == 1 then
 			local def = stack:get_definition()
-			if def.uv_image then
-				if def.groups.clothing == 1 then
-					table.insert(layer.clothing, def.uv_image)
-				elseif def.groups.clothing_cape == 1 then
-					table.insert(layer.cape, def.uv_image)
-				end
-			end
 			-- set comfortable temperature range
 			temp_min = temp_min - def.temp_min
 			temp_max = temp_max + def.temp_max
 		end
 	end
 	-- apply new temperature comfort range
+	local meta = player:get_meta()
 	meta:set_int("clothing_temp_min", temp_min)
 	meta:set_int("clothing_temp_max", temp_max )
-	local clothing_out = table.concat(layer.clothing, "^")
-	local cape_out = table.concat(layer.cape, "^")
-	if clothing_out == "" then
-		clothing_out = "blank.png"
-	end
-	if cape_out == "" then
-		cape_out = "blank.png"
-	end
+	sfinv.set_player_inventory_formspec(player)
+end
 
-	clothing.player_textures[name] = clothing.player_textures[name] or {}
-	clothing.player_textures[name].clothing = clothing_out
-	clothing.player_textures[name].cape = cape_out
-	player_api.update_textures(player)
-	self:run_callbacks("on_update", player)
+clothing.set_player_clothing = function(self, player)
+   print("WARNING: Something called set_player_clothing, which is obsolete.")
 end
 
 player_api.register_skin_modifier(function(textures, player, player_model, player_skin)

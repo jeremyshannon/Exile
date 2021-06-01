@@ -460,7 +460,7 @@ stairs.register_stair_and_slab(
 --unfired
 crafting.register_recipe({
 	type = "brick_makers_bench",
-	output = "tech:loose_brick_unfired 4",
+	output = "tech:loose_brick_unfired 6",
 	items = {'nodes_nature:clay_wet 3', 'nodes_nature:sand_wet'},
 	level = 1,
 	always_known = true,
@@ -470,7 +470,7 @@ crafting.register_recipe({
 crafting.register_recipe({
 	type = "brick_makers_bench",
 	output = "tech:bricks_and_mortar 12",
-	items = {"tech:lime_mortar", "tech:loose_brick 8"},
+	items = {"tech:lime_mortar", "tech:loose_brick 12"},
 	level = 1,
 	always_known = true,
 })

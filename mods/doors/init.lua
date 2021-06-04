@@ -454,8 +454,12 @@ function doors.register(name, def)
 	def.mesh = "door_a.obj"
 	minetest.register_node(":" .. name .. "_a", def)
 
-	def.mesh = "door_b.obj"
-	minetest.register_node(":" .. name .. "_b", def)
+	local def_opened = table.copy(def)
+
+	def_opened.mesh = "door_b.obj"
+	def_opened.groups.temp_pass = 1
+
+	minetest.register_node(":" .. name .. "_b", def_opened)
 
 	doors.registered_doors[name .. "_a"] = true
 	doors.registered_doors[name .. "_b"] = true

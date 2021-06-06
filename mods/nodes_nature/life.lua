@@ -205,7 +205,16 @@ local after_place_seedling = function(pos, placer, itemstack, pointed_thing)
 	meta:set_int("growth", growth)
 end
 
-
+---------------------------
+-- Prevent placing seed anywhere but sediment
+--
+local on_place_seedling = function(itemstack, placer, pointed_thing)
+   local ground = minetest.get_node(pointed_thing.under)
+   if minetest.get_item_group(ground.name,"sediment") == 0 then
+      return itemstack
+   end
+   return minetest.item_place_node(itemstack,placer,pointed_thing)
+end
 
 -------------------------------------------------------------
 --
@@ -503,6 +512,9 @@ for i in ipairs(plantlist) do
 		on_dig = function(pos, node, digger)
 		   on_dig_seedling(pos, node, digger)
 		end,
+		on_place = function(itemstack, placer, pointed_thing)
+		   return on_place_seedling(itemstack, placer, pointed_thing)
+		end,
 	})
 
 
@@ -799,9 +811,9 @@ for i in ipairs(plantlist2) do
 			stack_max = minimal.stack_max_light,
 			paramtype = "light",
 			floodable = true,
-      sunlight_propagates = true,
-      walkable = false,
-      buildable_to = true,
+			sunlight_propagates = true,
+			walkable = false,
+			buildable_to = true,
 			groups = g_seed,
 			sounds = nodes_nature.node_sound_defaults(),
 			on_construct = function(pos)
@@ -834,6 +846,9 @@ for i in ipairs(plantlist2) do
 			end,
 			on_dig = function(pos, node, digger)
 			   on_dig_seedling(pos, node, digger)
+			end,
+			on_place = function(itemstack, placer, pointed_thing)
+			   return on_place_seedling(itemstack, placer, pointed_thing)
 			end,
 		})
 

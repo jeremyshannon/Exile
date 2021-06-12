@@ -1,0 +1,3 @@
+name = "Exile"
+author = "Mantar"
+description = "Based on Sam, just stripped of his clothing and tossed through a portal to die."

@@ -38,4 +38,4 @@ player_api.register_skin("sprite", {
 })
 
 player_api.default_model = "character.b3d"
-player_api.default_skin = "character"
+player_api.default_skin = "player_exile"

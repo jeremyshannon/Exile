@@ -250,6 +250,25 @@ minetest.register_node("tech:clay_storage_pot_unfired", {
 
 --------------------------------------
 --OIL LAMP
+--convert fuel number to a string
+local fuel_string = function(fuel)
+   if not fuel or fuel < 1 then
+      return ("Oil lamp (empty)")
+   elseif fuel > 1609 then
+      return ("Oil lamp (full)")
+   elseif fuel < 110 then
+      return ("Oil lamp (almost empty)")
+   elseif fuel < 530 then
+      return ("Oil lamp (1/4 full)")
+   elseif fuel < 1175 then
+      return ("Oil lamp (1/2 full)")
+   elseif fuel < 1610 then
+      return ("Oil lamp (3/4 full)")
+   else
+      return ("Oil lamp")
+   end
+end
+
 --save usage into inventory, to prevent infinite supply
 local on_dig_oil_lamp = function(pos, node, digger)
 	if minetest.is_protected(pos, digger:get_player_name()) then
@@ -262,6 +281,7 @@ local on_dig_oil_lamp = function(pos, node, digger)
 	local new_stack = ItemStack("tech:clay_oil_lamp")
 	local stack_meta = new_stack:get_meta()
 	stack_meta:set_int("fuel", fuel)
+	stack_meta:set_string("description", fuel_string(fuel))
 
 
 	minetest.remove_node(pos)
@@ -282,8 +302,6 @@ local after_place_oil_lamp = function(pos, placer, itemstack, pointed_thing)
 		meta:set_int("fuel", fuel)
 	end
 end
-
-
 
 --unfired oil clay lamp
 minetest.register_node("tech:clay_oil_lamp_unfired", {
@@ -426,6 +444,7 @@ minetest.register_node("tech:clay_oil_lamp", {
 		--duration of burn
 		local meta = minetest.get_meta(pos)
 		meta:set_int("fuel", math.random(2100,2200))
+		meta:set_string("infotext",("Oil lamp (full)"))
 		--burn oil
 		minetest.get_node_timer(pos):start(5)
 	end,
@@ -435,6 +454,7 @@ minetest.register_node("tech:clay_oil_lamp", {
 	on_timer =function(pos, elapsed)
 		local meta = minetest.get_meta(pos)
 		local fuel = meta:get_int("fuel")
+		meta:set_string("infotext",fuel_string(fuel))
 		if fuel < 1 then
 			minetest.set_node(pos, {name = "tech:clay_oil_lamp_empty"})
 			--minetest.check_for_falling(pos)

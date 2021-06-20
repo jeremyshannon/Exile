@@ -257,15 +257,15 @@ minetest.register_alias("tech:clay_oil_lamp_empty",
 local fuel_string = function(fuel)
    if not fuel or fuel < 1 then
       return ("Oil lamp (empty)")
-   elseif fuel > 1609 then
+   elseif fuel > 2159 then
       return ("Oil lamp (full)")
-   elseif fuel < 110 then
+   elseif fuel < 200 then
       return ("Oil lamp (almost empty)")
-   elseif fuel < 530 then
+   elseif fuel < 800 then
       return ("Oil lamp (1/4 full)")
-   elseif fuel < 1175 then
+   elseif fuel < 1600 then
       return ("Oil lamp (1/2 full)")
-   elseif fuel < 1610 then
+   elseif fuel < 2200 then
       return ("Oil lamp (3/4 full)")
    else
       return ("Oil lamp")
@@ -407,12 +407,15 @@ minetest.register_node("tech:clay_oil_lamp_unlit", {
 		local meta = minetest.get_meta(pos)
 		local fuel = meta:get_int("fuel")
 		if ist_name == "tech:vegetable_oil" then
-		   if fuel and fuel < 110 then
-		      fuel = fuel + math.random(2100,2200)
-		      minetest.set_node(pos, {name = 'tech:clay_oil_lamp'})
+		   if fuel and fuel < 1550 then
+		      fuel = fuel + math.random(1450,1550)
+		      --minetest.set_node(pos, {name = 'tech:clay_oil_lamp'})
 		      meta:set_int("fuel", fuel)
 		      meta:set_string("infotext",fuel_string(fuel))
-		      itemstack:take_item()
+		      local name = clicker:get_player_name()
+		      if not minetest.is_creative_enabled(name) then
+			 itemstack:take_item()
+		      end
 		      return itemstack
 		   end
 		end

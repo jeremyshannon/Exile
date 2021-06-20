@@ -250,6 +250,9 @@ minetest.register_node("tech:clay_storage_pot_unfired", {
 
 --------------------------------------
 --OIL LAMP
+minetest.register_alias("tech:clay_oil_lamp_empty",
+			"tech:clay_oil_lamp_unlit")
+
 --convert fuel number to a string
 local fuel_string = function(fuel)
    if not fuel or fuel < 1 then
@@ -278,7 +281,7 @@ local on_dig_oil_lamp = function(pos, node, digger)
 	local meta = minetest.get_meta(pos)
 	local fuel = meta:get_int("fuel")
 
-	local new_stack = ItemStack("tech:clay_oil_lamp")
+	local new_stack = ItemStack("tech:clay_oil_lamp_unlit")
 	local stack_meta = new_stack:get_meta()
 	stack_meta:set_int("fuel", fuel)
 	stack_meta:set_string("description", fuel_string(fuel))
@@ -298,9 +301,11 @@ local after_place_oil_lamp = function(pos, placer, itemstack, pointed_thing)
 	local meta = minetest.get_meta(pos)
 	local stack_meta = itemstack:get_meta()
 	local fuel = stack_meta:get_int("fuel")
-	if fuel >0 then
-		meta:set_int("fuel", fuel)
+	if not fuel then
+	   fuel = 0
 	end
+	meta:set_int("fuel", fuel)
+	meta:set_string("infotext", fuel_string(fuel))
 end
 
 --unfired oil clay lamp
@@ -345,8 +350,8 @@ minetest.register_node("tech:clay_oil_lamp_unfired", {
 
 
 --fired oil clay lamp
-minetest.register_node("tech:clay_oil_lamp_empty", {
-	description = "Clay Oil Lamp (empty)",
+minetest.register_node("tech:clay_oil_lamp_unlit", {
+	description = "Clay Oil Lamp",
 	tiles = {
 		"tech_oil_lamp_top.png",
 		"tech_oil_lamp_bottom.png",
@@ -376,27 +381,48 @@ minetest.register_node("tech:clay_oil_lamp_empty", {
 	sounds = nodes_nature.node_sound_stone_defaults(),
 	floodable = true,
 	on_flood = function(pos, oldnode, newnode)
-		minetest.add_item(pos, ItemStack("tech:clay_oil_lamp_empty 1"))
+		minetest.add_item(pos, ItemStack("tech:clay_oil_lamp_unlit 1"))
 		return false
 	end,
+	on_dig = function(pos, node, digger)
+		on_dig_oil_lamp(pos, node, digger)
+	end,
+	after_place_node = function(pos, placer, itemstack, pointed_thing)
+		after_place_oil_lamp(pos, placer, itemstack, pointed_thing)
+	end,
+	on_ignite = function(pos, user)
+	   local meta = minetest.get_meta(pos)
+	   local fuel = meta:get_int("fuel")
+	   if fuel then
+	      minetest.set_node(pos, {name = 'tech:clay_oil_lamp'})
+	      meta:set_int("fuel", fuel)
+	      meta:set_string("infotext", fuel_string(fuel))
+	   end
+	end,
+
 	on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
 		--hit it with oil to restore
 		local itemstack = clicker:get_wielded_item()
 		local ist_name = itemstack:get_name()
-
+		local meta = minetest.get_meta(pos)
+		local fuel = meta:get_int("fuel")
 		if ist_name == "tech:vegetable_oil" then
-			minetest.set_node(pos, {name = 'tech:clay_oil_lamp'})
-			itemstack:take_item()
-			return itemstack
+		   if fuel and fuel < 110 then
+		      fuel = fuel + math.random(2100,2200)
+		      minetest.set_node(pos, {name = 'tech:clay_oil_lamp'})
+		      meta:set_int("fuel", fuel)
+		      meta:set_string("infotext",fuel_string(fuel))
+		      itemstack:take_item()
+		      return itemstack
+		   end
 		end
 	end,
-
 })
 
 
 --full oil clay lamp
 minetest.register_node("tech:clay_oil_lamp", {
-	description = "Clay Oil Lamp (full)",
+	description = "Clay Oil Lamp (lit)",
 	tiles = {
 		"tech_oil_lamp_top.png",
 		"tech_oil_lamp_bottom.png",
@@ -434,35 +460,40 @@ minetest.register_node("tech:clay_oil_lamp", {
 	sounds = nodes_nature.node_sound_stone_defaults(),
 	floodable = true,
 	on_flood = function(pos, oldnode, newnode)
-		minetest.add_item(pos, ItemStack("tech:clay_oil_lamp_empty 1"))
+		minetest.add_item(pos, ItemStack("tech:clay_oil_lamp_unlit 1"))
 		return false
 	end,
 	on_dig = function(pos, node, digger)
 		on_dig_oil_lamp(pos, node, digger)
 	end,
 	on_construct = function(pos)
-		--duration of burn
-		local meta = minetest.get_meta(pos)
-		meta:set_int("fuel", math.random(2100,2200))
-		meta:set_string("infotext",("Oil lamp (full)"))
-		--burn oil
 		minetest.get_node_timer(pos):start(5)
-	end,
-	after_place_node = function(pos, placer, itemstack, pointed_thing)
-		after_place_oil_lamp(pos, placer, itemstack, pointed_thing)
 	end,
 	on_timer =function(pos, elapsed)
 		local meta = minetest.get_meta(pos)
 		local fuel = meta:get_int("fuel")
 		meta:set_string("infotext",fuel_string(fuel))
 		if fuel < 1 then
-			minetest.set_node(pos, {name = "tech:clay_oil_lamp_empty"})
+			minetest.set_node(pos, {name = "tech:clay_oil_lamp_unlit"})
 			--minetest.check_for_falling(pos)
 			return false
 		else
 			meta:set_int("fuel", fuel - 1)
 			return true
 		end
+	end,
+	on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
+		-- to snuff it out
+		local itemstack = clicker:get_wielded_item()
+		local ist_name = itemstack:get_name()
+		local meta = minetest.get_meta(pos)
+		local fuel = meta:get_int("fuel")
+		minetest.set_node(pos, {name = 'tech:clay_oil_lamp_unlit'})
+		if fuel then
+		   meta:set_int("fuel", fuel)
+		   meta:set_string("infotext",fuel_string(fuel))
+		end
+		return itemstack
 	end,
 })
 

@@ -1,0 +1,3 @@
+[submodule "mods/naturalslopeslib"]
+	path = mods/naturalslopeslib
+	url = https://files.creativekara.fr/git/naturalslopeslib.git
